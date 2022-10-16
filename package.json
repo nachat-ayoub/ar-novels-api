@@ -6,7 +6,7 @@
   "scripts": {
     "start": "node app.js",
     "dev": "nodemon app.js",
-    "dep": "git add . && git commit -m \"New Commit\" && git push heroku master"
+    "dep": "git add . && git commit -m \"New Commit\" && git push"
   },
   "keywords": [],
   "author": "",
