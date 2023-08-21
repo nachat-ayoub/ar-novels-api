@@ -45,7 +45,7 @@ module.exports.getNovelsByGenres = async (genre) => {
             .text()
             .replace(/[\t\n]/g, '')
             .trim(),
-          image: $(novel).find('.item-thumb a img').attr('data-src'),
+          image: $(novel).find('.item-thumb a img').attr('src'),
           chapters: $(novel)
             .find('.item-summary .list-chapter .chapter-item .chapter a')
             .toArray()
@@ -70,8 +70,6 @@ module.exports.getHomeNovels = async () => {
     const res = await Client.axiosGet(process.env.BASE_SITE_URL);
     if (!res.data) return { message: 'cannot fetch the data' };
     const $ = cheerio.load(res.data);
-
-    // console.log($('.c-page').first().html());
 
     return {
       last_updates: $(
@@ -122,18 +120,17 @@ module.exports.getHomeNovels = async () => {
             .replace(/[\t\n]/g, '')
             .trim(),
           image: $(novel).find('a img').attr('src'),
-          chapters: [],
-          // $(novel)
-          //   .find('.popular-content .list-chapter .chapter-item .chapter a')
-          //   .toArray()
-          //   .map((ch) => ({
-          //     text: $(ch).text().trim(),
-          //     slug: $(ch)
-          //       .attr('href')
-          //       ?.split('/')
-          //       ?.filter((i) => i)
-          //       .pop(),
-          //   })),
+          chapters: $(novel)
+            .find('.popular-content .list-chapter .chapter-item .chapter a')
+            .toArray()
+            .map((ch) => ({
+              text: $(ch).text().trim(),
+              slug: $(ch)
+                .attr('href')
+                ?.split('/')
+                ?.filter((i) => i)
+                .pop(),
+            })),
         })),
     };
   } catch (error) {
@@ -153,15 +150,22 @@ module.exports.getNovelBySlug = async (novelSlug) => {
 
     const $ = cheerio.load(res.data);
 
-    // const chaptersData = await this.getNovelChaptersBySlug(novelSlug);
+    const chaptersData = await this.getNovelChaptersBySlug(
+      novelSlug,
+      $('body').html()
+    );
+
+    // * To get published date:
+    const scriptTag = $('script[type="application/ld+json"]').html();
+    const jsonMatch = /{[^]*}/.exec(scriptTag);
 
     return {
-      title: $('.post-title h1')
+      title: $('#manga-title h1')
         .text()
         .replace(/[\t\n]/g, '')
         .trim(),
-      image: $('.tab-summary .summary_image a img').attr('data-src'),
-      story: $('.summary__content p')
+      image: $('.tab-summary .summary_image a img').attr('src'),
+      story: $('#tab-manga-about > p')
         .toArray()
         .map((p) =>
           $(p)
@@ -170,49 +174,48 @@ module.exports.getNovelBySlug = async (novelSlug) => {
             .trim()
         )
         .filter((p) => p),
-      rank: $('.post-content > div:nth-child(2) > div:nth-child(2)')
+      rank: $('.post-content .rank')
         .text()
         .replace(/[\t\n]/g, '')
         .trim(),
 
-      alternative: $('div.post-content_item:nth-child(3) > div:nth-child(2)')
+      alternative: $('.post-content .alter')
         .text()
         .replace(/[\t\n]/g, '')
         .trim(),
 
-      authors: $('.author-content a')
+      authors: $('.post-content .artists a')
         .toArray()
         .map((author) => ({
           text: $(author).text().trim(),
           slug: $(author)
             .attr('href')
-            .split('/novel-author/')
-            .at(-1)
+            .split('/novel-artist/')
+            .pop()
             .replace(/[/]/g, ''),
         })),
 
-      genres: $('.genres-content a')
+      genres: $('.post-content .genres a')
         .toArray()
         .map((genre) => ({
           text: $(genre).text(),
           slug: $(genre)
             .attr('href')
             .split('/novel-genre/')
-            .at(-1)
+            .pop()
             .replace(/[/]/g, ''),
         })),
       type: $('div.post-content_item:nth-child(6) > div:nth-child(2)')
         .text()
         .trim(),
-      published_at: $(
-        'div.post-content_item:nth-child(1) > div:nth-child(2) > a:nth-child(1)'
-      )
-        .text()
-        .trim(),
-      status: $('.post-status > div:nth-child(2) > div:nth-child(2)')
-        .text()
-        .trim(),
-      chapters: [],
+      published_at: jsonMatch ? JSON.parse(jsonMatch[0]).datePublished : null,
+      //  $(
+      //   'div.post-content_item:nth-child(1) > div:nth-child(2) > a:nth-child(1)'
+      // )
+      //   .text()
+      //   .trim(),
+      status: $('.post-content .status .value').text().trim(),
+      chapters: chaptersData?.chapters ?? [],
     };
   } catch (error) {
     console.log(error);
@@ -306,7 +309,7 @@ module.exports.searchNovelByName = async (novelName, page, orderBy, genres) => {
           ?.text()
           ?.replace(/[\t\n]/g, '')
           ?.trim(),
-        image: $(novel).find('.tab-thumb a img').attr('data-src'),
+        image: $(novel).find('.tab-thumb a img').attr('src'),
         alternative: $(novel)
           ?.find('.tab-summary .post-content .mg_alternative .summary-content')
           ?.text()
@@ -356,7 +359,7 @@ module.exports.searchNovelByName = async (novelName, page, orderBy, genres) => {
 
 // *! Dynamic with puppeteer !* //
 // *? Get Novel Chapters By Slug :
-module.exports.getNovelChaptersBySlug = async (novelSlug) => {
+module.exports.getNovelChaptersBySlug = async (novelSlug, html = null) => {
   try {
     if (!novelSlug) return null;
     // const res = await Client.get(
@@ -364,12 +367,22 @@ module.exports.getNovelChaptersBySlug = async (novelSlug) => {
     //   {},
     //   'ul li.wp-manga-chapter'
     // );
-    const res = await Client.axiosGet(
-      `${process.env.BASE_SITE_URL}/novel/${novelSlug}/ajax/chapters`,
-      {
-        method: 'POST',
-      }
-    );
+
+    // const res = await Client.axiosGet(
+    //   `${process.env.BASE_SITE_URL}/novel/${novelSlug}/ajax/chapters`,
+    //   {
+    //     method: 'POST',
+    //   }
+    // );
+
+    let res = null;
+    if (html) {
+      res = { data: html };
+    } else {
+      res = await Client.axiosGet(
+        `${process.env.BASE_SITE_URL}/novel/${novelSlug}`
+      );
+    }
 
     // * [POST] "https://arnovel.me/home/novel/<NOVEL_SLUG>/ajax/chapters/"
 
