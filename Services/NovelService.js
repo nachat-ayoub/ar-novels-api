@@ -78,38 +78,30 @@ module.exports.getHomeNovels = async () => {
         '.c-blog-listing #loop-content.page-content-listing.item-big_thumbnail .page-item-detail'
       )
         .toArray()
-        .map((novel, i) =>
-          novel && i == 0
-            ? console.log(
-                '\n\n',
-                $(novel).find('.item-summary .post-title h3').text(),
-                ' - ',
-                $(novel).find('.item-thumb a').first().attr('href'),
-                '\n\n'
-              )
-            : {
-                novel_slug: $(novel).find('.item-thumb a').first().attr('href'),
-                // ?.split('/')
-                // ?.filter((i) => i)
-                // ?.at(-1)
-                title: $(novel)
-                  .find('.item-summary .post-title h3')
-                  .text()
-                  .replace(/[\t\n]/g, '')
-                  .trim(),
-                image: $(novel).find('.item-thumb a img').attr('src'),
-                chapters: $(novel)
-                  .find('.item-summary .list-chapter .chapter-item .chapter a')
-                  .toArray()
-                  .map((ch) => ({
-                    text: $(ch).text().trim(),
-                    slug: $(ch).attr('href'),
-                    // ?.split('/')
-                    // ?.filter((i) => i)
-                    // ?.at(-1),
-                  })),
-              }
-        ),
+        .map((novel) => ({
+          novel_slug: decodeURI(
+            $(novel).find('.item-thumb a').first().attr('href')
+          )
+            ?.split('/')
+            ?.filter((i) => i)
+            ?.at(-1),
+          title: $(novel)
+            .find('.item-summary .post-title h3')
+            .text()
+            .replace(/[\t\n]/g, '')
+            .trim(),
+          image: $(novel).find('.item-thumb a img').attr('src'),
+          chapters: $(novel)
+            .find('.item-summary .list-chapter .chapter-item .chapter a')
+            .toArray()
+            .map((ch) => ({
+              text: $(ch).text().trim(),
+              slug: decodeURI($(ch).attr('href'))
+                ?.split('/')
+                ?.filter((i) => i)
+                ?.at(-1),
+            })),
+        })),
 
       popular_novels: true
         ? []
