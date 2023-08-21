@@ -28,7 +28,7 @@ module.exports.getNovelsByGenres = async (genre) => {
             .attr('href')
             ?.split('/')
             ?.filter((i) => i)
-            ?.at(-1),
+            .pop(),
         })),
       novels: $('.page-content-listing.item-big_thumbnail .page-item-detail')
         .toArray()
@@ -39,7 +39,7 @@ module.exports.getNovelsByGenres = async (genre) => {
             .attr('href')
             ?.split('/')
             ?.filter((i) => i)
-            ?.at(-1),
+            .pop(),
           title: $(novel)
             .find('.item-summary .post-title h3')
             .text()
@@ -55,7 +55,7 @@ module.exports.getNovelsByGenres = async (genre) => {
                 .attr('href')
                 ?.split('/')
                 ?.filter((i) => i)
-                ?.at(-1),
+                .pop(),
             })),
         })),
     };
@@ -84,7 +84,7 @@ module.exports.getHomeNovels = async () => {
           )
             ?.split('/')
             ?.filter((i) => i)
-            ?.at(-1),
+            .pop(),
           title: $(novel)
             .find('.item-summary .post-title h3')
             .text()
@@ -99,7 +99,7 @@ module.exports.getHomeNovels = async () => {
               slug: decodeURI($(ch).attr('href'))
                 ?.split('/')
                 ?.filter((i) => i)
-                ?.at(-1),
+                .pop(),
             })),
         })),
 
@@ -116,7 +116,7 @@ module.exports.getHomeNovels = async () => {
                 ?.attr('href')
                 ?.split('/')
                 ?.filter((i) => i)
-                ?.at(-1),
+                .pop(),
               title: $(novel)
                 .find('a')
                 ?.first()
@@ -134,7 +134,7 @@ module.exports.getHomeNovels = async () => {
               //       .attr('href')
               //       ?.split('/')
               //       ?.filter((i) => i)
-              //       ?.at(-1),
+              //       .pop(),
               //   })),
             })),
     };
@@ -247,7 +247,7 @@ module.exports.getChapterBySlug = async (novelSlug, chapterSlug) => {
             ?.attr('href')
             ?.split('/')
             ?.filter((i) => i)
-            ?.at(-1) || '#',
+            .pop() || '#',
       },
       next: {
         disabled: $(NextElem).length === 0,
@@ -256,7 +256,7 @@ module.exports.getChapterBySlug = async (novelSlug, chapterSlug) => {
             ?.attr('href')
             ?.split('/')
             ?.filter((i) => i)
-            ?.at(-1) || '#',
+            .pop() || '#',
       },
       chapter: {
         title: $('.wp-manga-nav .entry-header_wrap li.active')
@@ -302,7 +302,7 @@ module.exports.searchNovelByName = async (novelName, page, orderBy, genres) => {
           ?.attr('href')
           ?.split('/')
           ?.filter((i) => i)
-          ?.at(-1),
+          .pop(),
         title: $(novel)
           ?.find('.tab-summary .post-title h3 a')
           ?.text()
@@ -331,7 +331,7 @@ module.exports.searchNovelByName = async (novelName, page, orderBy, genres) => {
               ?.attr('href')
               ?.split('/')
               ?.filter((i) => i)
-              ?.at(-1),
+              .pop(),
           },
         ],
       }));
@@ -389,7 +389,7 @@ module.exports.getNovelChaptersBySlug = async (novelSlug) => {
           ?.attr('href')
           ?.split('/')
           ?.filter((chap) => chap)
-          ?.at(-1),
+          .pop(),
       }));
     return { chapters };
   } catch (error) {
