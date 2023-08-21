@@ -82,13 +82,10 @@ module.exports.getHomeNovels = async () => {
           novel && i == 0
             ? console.log('\n\n', $(novel).html(), '\n\n')
             : {
-                novel_slug: $(novel)
-                  .find('.item-thumb a')
-                  .first()
-                  .attr('href')
-                  ?.split('/')
-                  ?.filter((i) => i)
-                  ?.at(-1),
+                novel_slug: $(novel).find('.item-thumb a').first().attr('href'),
+                // ?.split('/')
+                // ?.filter((i) => i)
+                // ?.at(-1)
                 title: $(novel)
                   .find('.item-summary .post-title h3')
                   .text()
