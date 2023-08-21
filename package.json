@@ -3,6 +3,7 @@
   "name": "teamx-novel-api",
   "version": "1.0.0",
   "description": "",
+  "node": "16.x",
   "main": "app.js",
   "scripts": {
     "start": "node app.js",
