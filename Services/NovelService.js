@@ -176,7 +176,7 @@ module.exports.getNovelBySlug = async (novelSlug) => {
         .filter((p) => p),
       rank: $('.post-content .rank')
         .text()
-        .replace(/[\t\n]/g, '')
+        .replace(/[\t\nRank ]/g, '')
         .trim(),
 
       alternative: $('.post-content .alter')
