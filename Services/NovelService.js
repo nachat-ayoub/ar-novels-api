@@ -80,7 +80,7 @@ module.exports.getHomeNovels = async () => {
         .toArray()
         .map((novel, i) =>
           novel && i == 0
-            ? console.log('\n\n', novel, '\n\n')
+            ? console.log('\n\n', $(novel).html(), '\n\n')
             : {
                 novel_slug: $(novel)
                   .find('.item-thumb a')
