@@ -1,4 +1,4 @@
-const router = require("express").Router();
+const router = require('express').Router();
 const {
   getNovelBySlug,
   getChapterBySlug,
@@ -6,16 +6,16 @@ const {
   getNovelChaptersBySlug,
   getHomeNovels,
   getNovelsByGenres,
-} = require("../Services/NovelService");
+} = require('../Services/NovelService');
 
 // *! Home Route :
-router.get("/", async (req, res, next) => {
+router.get('/', async (req, res, next) => {
   // Start time
   const start_time = new Date();
   const homeData = await getHomeNovels();
   // End time
   const end_time = new Date();
-  const done_in = ((end_time - start_time) / 1000).toFixed(2) + "s";
+  const done_in = ((end_time - start_time) / 1000).toFixed(2) + 's';
 
   res.status(200).json({
     done_in,
@@ -24,9 +24,9 @@ router.get("/", async (req, res, next) => {
 });
 
 // *! Search For Novel Route :
-router.get("/search", async (req, res, next) => {
+router.get('/search', async (req, res, next) => {
   const novelName = req.query.s;
-  const orderBy = req.query.orderby || "";
+  const orderBy = req.query.orderby || '';
   const page = parseInt(req.query.page) || 1;
   const genres = req.query.genre || [];
 
@@ -45,13 +45,13 @@ router.get("/search", async (req, res, next) => {
 
   // End time
   const end_time = new Date();
-  const done_in = ((end_time - start_time) / 1000).toFixed(2) + "s";
+  const done_in = ((end_time - start_time) / 1000).toFixed(2) + 's';
 
   if (!novelsData)
     return res.status(500).json({
       done_in,
       query: novelName,
-      message: "Error: Somthing Whent Wrong!",
+      message: 'Error: Somthing Whent Wrong!',
     });
   res.status(200).json({
     done_in,
@@ -62,7 +62,7 @@ router.get("/search", async (req, res, next) => {
 });
 
 // *! Novels By Genre Route :
-router.get("/genre/:genre", async (req, res, next) => {
+router.get('/genre/:genre', async (req, res, next) => {
   try {
     // Genre Slug
     const genre = req.params.genre;
@@ -72,11 +72,11 @@ router.get("/genre/:genre", async (req, res, next) => {
     const novelsData = await getNovelsByGenres(genre);
     // End time
     const end_time = new Date();
-    const done_in = ((end_time - start_time) / 1000).toFixed(2) + "s";
+    const done_in = ((end_time - start_time) / 1000).toFixed(2) + 's';
 
     if (!novelsData)
       return res.status(500).json({
-        message: "Error: Somthing Whent Wrong!",
+        message: 'Error: Somthing Whent Wrong!',
       });
     res.status(200).json({
       done_in,
@@ -88,7 +88,7 @@ router.get("/genre/:genre", async (req, res, next) => {
 });
 
 // *! Novel Page Route :
-router.get("/:novelSlug", async (req, res, next) => {
+router.get('/:novelSlug', async (req, res, next) => {
   const novelSlug = req.params.novelSlug;
 
   // Start time
@@ -98,11 +98,11 @@ router.get("/:novelSlug", async (req, res, next) => {
 
   // End time
   const end_time = new Date();
-  const done_in = ((end_time - start_time) / 1000).toFixed(2) + "s";
+  const done_in = ((end_time - start_time) / 1000).toFixed(2) + 's';
 
   if (!novelData)
     return res.status(500).json({
-      message: "Error: Somthing Whent Wrong!",
+      message: 'Error: Somthing Whent Wrong!',
     });
   res.status(200).json({
     done_in,
@@ -112,7 +112,7 @@ router.get("/:novelSlug", async (req, res, next) => {
 });
 
 // *! Novel Page Route :
-router.get("/:novelSlug/chapters", async (req, res, next) => {
+router.get('/:novelSlug/chapters', async (req, res, next) => {
   const novelSlug = req.params.novelSlug;
 
   // Start time
@@ -122,11 +122,11 @@ router.get("/:novelSlug/chapters", async (req, res, next) => {
 
   // End time
   const end_time = new Date();
-  const done_in = ((end_time - start_time) / 1000).toFixed(2) + "s";
+  const done_in = ((end_time - start_time) / 1000).toFixed(2) + 's';
 
   if (!novelData)
     return res.status(500).json({
-      message: "Error: Somthing Whent Wrong!",
+      message: 'Error: Somthing Whent Wrong!',
     });
   res.status(200).json({
     done_in,
@@ -136,7 +136,7 @@ router.get("/:novelSlug/chapters", async (req, res, next) => {
 });
 
 // *! Chapter Page Route :
-router.get("/:novelSlug/:chapterSlug", async (req, res, next) => {
+router.get('/:novelSlug/:chapterSlug', async (req, res, next) => {
   const { novelSlug, chapterSlug } = req.params;
 
   // Start time
@@ -146,11 +146,11 @@ router.get("/:novelSlug/:chapterSlug", async (req, res, next) => {
 
   // End time
   const end_time = new Date();
-  const done_in = ((end_time - start_time) / 1000).toFixed(2) + "s";
+  const done_in = ((end_time - start_time) / 1000).toFixed(2) + 's';
 
   if (!chapterData)
     return res.status(500).json({
-      message: "Error: Somthing Whent Wrong!",
+      message: 'Error: Somthing Whent Wrong!',
     });
   res.status(200).json({
     done_in,
