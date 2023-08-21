@@ -97,47 +97,48 @@ module.exports.getHomeNovels = async () => {
                   .toArray()
                   .map((ch) => ({
                     text: $(ch).text().trim(),
-                    slug: $(ch)
-                      .attr('href')
-                      ?.split('/')
-                      ?.filter((i) => i)
-                      ?.at(-1),
+                    slug: $(ch).attr('href'),
+                    // ?.split('/')
+                    // ?.filter((i) => i)
+                    // ?.at(-1),
                   })),
               }
         ),
 
-      popular_novels: $('.c-page')
-        .first()
-        .find('.page-item-detail')
-        .toArray()
-        .map((novel) => ({
-          novel_slug: $(novel)
-            .find('a')
-            ?.first()
-            ?.attr('href')
-            ?.split('/')
-            ?.filter((i) => i)
-            ?.at(-1),
-          title: $(novel)
-            .find('a')
-            ?.first()
-            .attr('title')
-            .replace(/[\t\n]/g, '')
-            .trim(),
-          image: $(novel).find('a img').attr('src'),
-          chapters: [],
-          // $(novel)
-          //   .find('.popular-content .list-chapter .chapter-item .chapter a')
-          //   .toArray()
-          //   .map((ch) => ({
-          //     text: $(ch).text().trim(),
-          //     slug: $(ch)
-          //       .attr('href')
-          //       ?.split('/')
-          //       ?.filter((i) => i)
-          //       ?.at(-1),
-          //   })),
-        })),
+      popular_novels: true
+        ? []
+        : $('.c-page')
+            .first()
+            .find('.page-item-detail')
+            .toArray()
+            .map((novel) => ({
+              novel_slug: $(novel)
+                .find('a')
+                ?.first()
+                ?.attr('href')
+                ?.split('/')
+                ?.filter((i) => i)
+                ?.at(-1),
+              title: $(novel)
+                .find('a')
+                ?.first()
+                .attr('title')
+                .replace(/[\t\n]/g, '')
+                .trim(),
+              image: $(novel).find('a img').attr('src'),
+              chapters: [],
+              // $(novel)
+              //   .find('.popular-content .list-chapter .chapter-item .chapter a')
+              //   .toArray()
+              //   .map((ch) => ({
+              //     text: $(ch).text().trim(),
+              //     slug: $(ch)
+              //       .attr('href')
+              //       ?.split('/')
+              //       ?.filter((i) => i)
+              //       ?.at(-1),
+              //   })),
+            })),
     };
   } catch (error) {
     console.log(error);
